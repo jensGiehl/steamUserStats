@@ -1,4 +1,6 @@
 #!/bin/bash
+currentDate=`date '+%Y-%m-%d_%H%M'`
+outputDir="$STEAM_ID/$currentDate"
 
 # Load Gamelist
 ./loadGames.sh myGames
@@ -20,14 +22,14 @@ while read appId; do
      logger "Remove $appId.json because it's empty"
      rm "$appId.json"
   else
-     mkdir --parents "$STEAM_ID"
+     mkdir --parents "$outputDir"
      fileName=`cat $appId.json| grep "gameName" | sed -e 's/"gameName": "//g;s/",//g;s/^[ \t]*//;s/"//g'`
      if [ ! -z "$fileName"  ]; then
         logger "Steam App ID $appId = $fileName"
-        mv $appId.json "$STEAM_ID/$fileName.json"
+        mv $appId.json "$outputDir/$fileName.json"
      else
         logger "Steam App ID $appId has an unknown name"
-        mv $appId.json $STEAM_ID
+        mv $appId.json "$outputDir"
      fi     
   fi
 done < myAppIds.txt
